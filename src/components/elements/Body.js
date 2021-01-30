@@ -17,6 +17,10 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     marginTop: theme.spacing(2),
   },
+	menu: {
+		minHeight: 650,
+		margin: "auto",
+	},
   input: {
     width: "50%",
     flexGrow: 1,
@@ -42,16 +46,10 @@ const useStyles = makeStyles((theme) => ({
       border: "1px solid blue",
     },
   },
-  doneBtn: {
-    marginRight: theme.spacing(10),
-  },
   clearAllBtn: {
     display: "inline-block",
-  },
-  clearBtn: {
-    position: "absolute",
-    bottom: theme.spacing(5),
-    left: theme.spacing(9),
+		marginBottom: 20,
+		marginTop: 100,
   },
 }));
 
@@ -60,7 +58,7 @@ export default function Body(props) {
   const [item, setItem] = React.useState({
     name: "",
     description: "",
-    isIgnored: false,
+    isIgnored: false, 
   });
 
   const [items, setItems] = React.useState([]);
@@ -71,12 +69,13 @@ export default function Body(props) {
         return [...prevValue, item];
       });
     }
-    setItem({ name: "", description: "" });
+    setItem({ name: "", description: "", isIgnored: false });
   };
 
 	const toggleIgnoreItem = (id) => {
 		setItems(prevItems => {
 			prevItems[id].isIgnored	= !prevItems[id].isIgnored;
+			return prevItems;
 		});		
 	}
 
@@ -84,11 +83,9 @@ export default function Body(props) {
     setItems((prevItems) => {
       return prevItems.filter((item, index) => index != id);
     });
+		
   };
 
-	const clearDoneItem = () => {
-		setItems(prevItems => (items.filter(item => item.isIgnored === true)));	
-	};
 
 	const clearAllItem = () => {
 		setItems([]);
@@ -96,8 +93,11 @@ export default function Body(props) {
 
   return (
     <div className={classes.root}>
-      <Grid xs="12" sm="12" lg="4">
-        <Paper style={{ minHeight: 650}}>
+
+				<Grid container spacing={2}>
+     		<Grid style={{margin: "auto"}} item xs="12" sm="6" lg="4">
+
+     	<Paper className={classes.menu}> 
 					<Typography variant="h5" color="inherit" >TO-DO LIST</Typography>
           <Input
             className={classes.input}
@@ -136,20 +136,14 @@ export default function Body(props) {
                 id={index}
                 name={item.name}
                 description={item.description}
+								isIgnored={item.isIgnored}
 								onIgnore={toggleIgnoreItem}
                 onDelete={deleteItem}
               ></Item>
             ))}
           </div>
+					{items.length > 0 && 
           <div className={classes.clearBtn}>
-            <Button
-              className={classes.doneBtn}
-              variant="outlined"
-              color="inherit"
-							onClick={clearDoneItem}
-            >
-              Clear Done
-            </Button>
             <Button
               className={classes.clearAllBtn}
               variant="outlined"
@@ -159,7 +153,10 @@ export default function Body(props) {
               Clear All
             </Button>
           </div>
-        </Paper>
+					}
+
+		</Paper>
+		</Grid>
       </Grid>
     </div>
   );
