@@ -7,37 +7,39 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import Checkbox from "@material-ui/core/Checkbox";
 import TextField from "@material-ui/core/TextField";
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
+import { Redirect } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     marginTop: theme.spacing(1),
     textAlign: "left",
-    marginLeft: theme.spacing(10),
+    marginLeft: theme.spacing(8),
+    borderBottom: "1px dashed red",
+    width: "80%",
   },
   name: {
     display: "inline-block",
     margin: "auto 20px auto 20px",
-    width: "40%",
+    width: "60%",
   },
   expand: {
     display: "inline-block",
     margin: "auto 20px auto 20px",
+    position: "relative",
+    top: theme.spacing(1),
   },
   description: {
     position: "relative",
     left: theme.spacing(4),
   },
+  delete: {
+    position: "relative",
+    top: theme.spacing(1),
+  },
 }));
 
-export default function Item({
-  id,
-  name,
-  description,
-  isIgnored,
-  onIgnore,
-  onDelete,
-}) {
+export default function Item({ id, name, description, isIgnored, onChecked }) {
   const classes = useStyles();
 
   const [checked, setChecked] = React.useState(false);
@@ -46,7 +48,7 @@ export default function Item({
 
   const handleCheckbox = (e) => {
     setLineThrough(!lineThrough);
-    onIgnore(id);
+    onChecked(id);
     setChecked(e.target.checked);
   };
 
@@ -69,15 +71,6 @@ export default function Item({
           className={classes.expand}
           onClick={() => setExpanded(!expand)}
         ></ExpandMoreIcon>
-      )}
-      {lineThrough && (
-        <DeleteIcon
-          onClick={() => {
-            onDelete(id);
-            setLineThrough(false);
-            setChecked(false);
-          }}
-        ></DeleteIcon>
       )}
       {expand && (
         <Typography variant="body1" className={classes.description}>
